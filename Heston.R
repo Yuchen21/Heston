@@ -13,10 +13,7 @@ eval_g_ineq <- function (x) {
   grad <- c(0,0, -2.0*x[4],-2.0*x[3],2.0*x[5])
   return(list("constraints"=c(x[5]*x[5] - 2.0*x[3]*x[4]), "jacobian"=grad))  
 }
-# Model = B11;
-# dx1 = (k1 + k2*x2)*dt + sqrt(x2)*(sqrt(1 - rho^2)*dW1 + rho*dW2)
-# dx2 = kappa*(theta - x2)*dt + sigma*x2*dW2
-# 5 parameters to be estimated: (k1,k2,rho,kappa,theta,sigma)
+
 
 # Heston model:
 # dln(S_t) = \mu dt + \sqrt{V_t}dW_t^{1}
@@ -41,7 +38,7 @@ sigma_0  <-0.25
 
 param_0<-c(v_0,rho_0,kappa_0,theta_0,sigma_0)
 
-args$mode = 'option' # calibration to ATM option prices 
+args$mode = 'state' # calibration to ATM option prices 
 # daily data: del = 1/52
 delta <- 1/252
 n     <- 500
@@ -82,7 +79,7 @@ for (i in 2:n){
   x[i,1] <- x1simul[1+(i-1)*factor]
   x[i,2] <- x2simul[1+(i-1)*factor]
 }
-args$mode='state'
+
 output <- mymle(ModelHeston, x, delta, param_0, args)
 
 print(output)
